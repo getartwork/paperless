@@ -1,123 +1,303 @@
-# paperless.js - manufacturing execution system (Подсистема безбумажного управления производством)
+# Paperless on metadata-react-ui
 
-Набор компонентов javascript, внешних обработок для 1С и методических рекомендаций для организации безбумажного производства в цехах сборки окон из ПВХ, деревянного и алюминиевого профиля.
+Forked from https://github.com/davezuko/react-redux-starter-kit
 
-Комплекс позволяет выводить на экран по результатам сканирования этикеток либо с интерактивными фильтрами:
-- состав заданий на производство
-- расстановку заготовок по ячейкам
-- чертежи и фрагменты спецификаций изделий
+This starter kit is designed to get you up and running with a bunch of awesome new front-end technologies, all on top of a configurable, feature-rich webpack build system that's already setup to provide hot reloading, CSS modules with Sass support, unit testing, code coverage reports, bundle splitting, and a whole lot more.
 
-При необходимости, система может:
-- формировать в реальном времени команды для отрезных, отрубных, фрезерных и сварочных станков
-- регистрировать события поступления, готовности или отгрузки изделий и полуфабрикатов на любых производственных переделах
+The primary goal of this project is to remain as **unopinionated** as possible. Its purpose is not to dictate your project structure or to demonstrate a complete sample application, but to provide a set of tools intended to make front-end development robust, easy, and, most importantly, fun. Check out the full feature list below!
 
-## Лицензия
-Доступ к материалам данного репозитоиря (далее по тексту ПО - программное обеспечение), предоставляется **исключительно в личных информационно-ознакомительных целях**. При возникновении необходимости иного использования полученных материалов, Вы обязаны обратиться к Правообладателю (info@oknosoft.ru) для заключения [договора на передачу имущественных прав](http://www.oknosoft.ru/programmi-oknosoft/metadata.html).
+Finally, This project wouldn't be possible without the help of our many contributors, so [thank you](#thank-you) for all of your help.
 
-- Распространение ПО как самостоятельного продукта запрещено
-- Распространение ПО в составе продуктов, являющихся конкурентами metadata.js, или обладающих схожей с функциональностью - запрещено
-- Коммерческая [лицензия на разработчика](http://www.oknosoft.ru/programmi-oknosoft/metadata.html) позволяет использовать и распространять ПО в любом количестве неконкурирующих продуктов, без ограничений на количество копий
 
-Данная лицензия распространяется на все содержимое репозитория, но не заменяют существующие лицензии для продуктов, используемых библиотекой metadata.js
 
-## Философия решения
-Библиотека paperless.js построена на базе [metadata.js](https://github.com/oknosoft/metadata.js), но *metadata.js* использована в безбумажке *нетрадиционным способом*:
-- Таблицы данных на стороне браузера, описание метаданных и динамические формы в настоящий момент не используются
-- Режим offline - не поддерживается
-- Состав и внешний вид данных, которые будут показаны пользователю, кодируется **не в javascript**, а во **внешней обработке 1С**, оформленной по стандартам БСП, подключаемой в справочнике `ДополнительныеОтчетыИОбработки`
-   + Обработка должна содержать как минимум один экспортный метод
-   + Имя обработки и имя метода для обработки данных задаются в настройках *Варианта* на стороне браузера
-   + Веб-страница безбумажки передаёт через модуль http-сервиса в заданный метод фиксированную структуру параметров
-   + Структура параметров, хотя и Фиксирована, содержит поле типа json, что позволяет при необходимости, перегнать через неё в 1С весьма сложноструктурированные данные 
-   + Метод интерпретирует штрихкод и прочие поля структуры, среди которых могут быть значения как примитивных, так и ссылочных типов, выполняет обработку данных и формирует выходную структуру заданного формата, которая заворачивается в json и отправляется назад на страницу безбумажки
-   + Страница безбумажки интерпретирует поступившие данные и строит на их основании шапку, эскиз и табличную часть интерфейса
-   + Любой фрагмент интерфейса пользователя может быть отключен или переопределён поступившими из 1С данными. Шапка, эскиз и табличная часть, используются наиболее часто, но могут быть отключены для конкретных рабочих мест
-   + Для формирования интерфейса пользователя, используются элементы `dhtmlXForm`, `dhtmlXLayout` и `dhtmlXGrid`, описание API которых доступно на странице проекта [dhtmlx](http://docs.dhtmlx.com/index.html)    
- 
-## Демо безбумажки
-Для разворачивания демо-примера, потребуется:
-- Установленная платформа 1С
-- Актуальная версия  [УПзП](http://www.oknosoft.ru/program-possibilities.html)
-- web-сервер Apache2.2
-- Файлы данного репозитория
-- Если для неких рабочих мест нужно формирование эскизов фрагментов изделий (отдельно створка или стеклопакет), дополнительно потребуется развернуть службу [PhantomJS динамического формирования эскизов](http://www.oknosoft.ru/wiki/JS:%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0_%D0%B8_%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_PhantomJS_%D0%B2_Linux_%D0%B8_Windows)
+## Table of Contents
+1. [Features](#features)
+1. [Requirements](#requirements)
+1. [Getting Started](#getting-started)
+1. [Application Structure](#application-structure)
+1. [Development](#development)
+  1. [Developer Tools](#developer-tools)
+  1. [Routing](#routing)
+1. [Testing](#testing)
+1. [Deployment](#deployment)
+1. [Build System](#build-system)
+  1. [Configuration](#configuration)
+  1. [Root Resolve](#root-resolve)
+  1. [Globals](#globals)
+  1. [Styles](#styles)
+  1. [Server](#server)
+  1. [Production Optimization](#production-optimization)
+1. [Learning Resources](#learning-resources)
+1. [FAQ](#troubleshooting)
+1. [Thank You](#thank-you)
 
-### Публикация http-сервиса paperless
-- Если в локальной сети развёрнут сервер DNS, создадим для компьютера с Apache запись A или CNAME с именем, например `paperless.local`. Если локальной службы DNS нет, добавим строчку в файлы `hosts` на всех компьютерах, которые будут использованы для безбумажки
-- Добавляем в конфигурационные файлы Apache настройки публикации сервиса 1С (см. примеры для [windows](1c/httpd.1c.windows.conf) и [linux](1c/httpd.1c.linux.conf)
-- Размещаем по опубликованному пути файл [default.vrd](1c/default.vrd) и редактируем в нём строку подключения с тем, чтобы она указывала на правильные сервер 1С и базу УПзП на этом сервере
-- Параметр `enable="false"` после параметра `ib="..."` в файле `default.vrd` отключает публикацию тонкого и веб-клиентов 1С. Если этот параметр сброшен, подключиться к 1С обычными клиентами не получится. Наружу будет смотреть только http-сервис
-- Параметры `Usr=...;Pwd=...;` в строке `ib="..."` отключают запрос ввода имени и пароля пользователя при обращении к веб-сервису. Если эти параметры не указывать в строке подключения, потребуется авторизация в браузере
- 
-Для проверки правильности выполнения этого шага, набираем в строке браузера http://paperless.local/kademo/hs/pl - должна получиться примерно такая картинка:
-![Пустой ответ сервиса](https://raw.githubusercontent.com/oknosoft/paperless/master/data/blank-response.png)
+## Features
+* [react](https://github.com/facebook/react)
+* [redux](https://github.com/rackt/redux)
+* [react-router](https://github.com/rackt/react-router)
+* [react-router-redux](https://github.com/rackt/react-router-redux)
+* [webpack](https://github.com/webpack/webpack)
+* [babel](https://github.com/babel/babel)
+* [koa](https://github.com/koajs/koa)
+* [karma](https://github.com/karma-runner/karma)
+* [eslint](http://eslint.org)
 
-### Настройка на стороне 1С
-- Читаем тест модуля http-сервиса `PaperLess` внутри УПзП
-- Читаем тексты модулей обработок из папки [1c](1c) текущего репозитория. Начать рекомендуется с обработки `БезбумажкаСкелетон.epf` - отсальные обработки от неё унаследованы
-- Подключаем интересующие обработки в стандартном БСП-шном справочнике `ДополнительныеОтчетыИОбработки`
-- Для целей отладки, в модуле http-сервиса `PaperLess` строка 202, можно заменить код:
+## Requirements
+* node `^6.0`
+* npm `^3.2`
+
+## Getting Started
+
+After confirming that your development environment meets the specified [requirements](#requirements), you can create a new project based on `react-redux-starter-kit` in one of two ways:
+
+### Install from source
+
+First, clone or download:
+
+```bash
+$ git clone https://github.com/davezuko/react-redux-starter-kit.git
+// or
+$ wget -O react-redux-starter-kit.zip https://github.com/davezuko/react-redux-starter-kit/archive/master.zip
+$ unzip react-redux-starter-kit.zip
 ```
-// ОтчетОбъект = ДополнительныеОтчетыИОбработки.ПолучитьОбъектВнешнейОбработки(Рез.Ссылка);
-на
-ОтчетОбъект = ВнешниеОбработки.Создать("путь_к_обработке.epf", Ложь);
+
+Then, rename to your project name and change into the directory:
+
+```bash
+$ mv react-redux-starter-kit <my-project-name>
+$ cd <my-project-name>
 ```
-- Размещаем в константе `БЕЗБУМАЖКА_ВАРИАНТЫ_ОТЧЕТОВ` в разделе `ФОРМИРОВАНИЕ ДОКУМЕНТОВ и ОТЧЕТОВ` текст описания используеых обработок безбумажки. Пояснения к содержанию константы доступны в форме 1С. Продублируем их здесь:
+
+### Alternatively, install via `redux-cli`
+
+If not already installed (globally):
+
+```bash
+$ npm i redux-cli -g
 ```
-// каждая строка - описание варианта
-// точка с запятой - разделитель полей варианта
-// Представление для меню; Имя обработки, Имя метода, Имя варианта - 4 поля					
-Обзор задания;paperless_view_task;;Профиль
-Фурнитура;paperless_furn;;Профиль
-Остекление;paperless_glass;;Профиль
-СГП;paperless_stock;;Профиль
-План ПВХ;paperless_plan_pvc;Проводник;
+
+Then, create a new project:
+
+```bash
+$ redux new <my-project-name>
+$ cd <my-project-name>
 ```
-Данный пример сообщит javascript-движку безбумажки, что для для выполнения команд на стороне 1С, доступны 5 обработок (paperless_view_task, paperless_furn, paperless_glass, paperless_stock и paperless_plan_pvc). Система построит меню выбора варианта из пяти пунктов (Обзор задания, Фурнитура, Остекление, СГП и План ПВХ)
 
-### Настройка на стороне клиента
-Откроем браузер на странице http://paperless.local/options.html - должна получиться примерно такая картинка:
-![options.html](https://raw.githubusercontent.com/oknosoft/paperless/master/data/options.png)
-- В поле `URL http-сервиса 1С`, уточняем адрес публикации службы 1С
-- Поле `URL сервиса PhantomJS` имеет смысл заполнять в случае, если планируется обращаться к фантому с клиента для формирования эскизов
-- Поля `URL node-сервиса relay`, `Адрес фурн. станции` и `Порт фурн. станции` имеет смысл заполнять для рабочих мест, которые должны отправлять команды отрубающему механизму фурнитурной станции
-- Поле `Варианты` недоступно для редактирования и заполняется текстом константы 1С `БЕЗБУМАЖКА_ВАРИАНТЫ_ОТЧЕТОВ` по кнопке `Прочитать из 1С`
-- В поле `Действие по умолчанию` можно указать строку варианта, который будет использован по умолчанию на данном рабочем месте
+### Install dependencies, and check to see it works
 
-### Сканер
-Страница безбумажки направляет весь клавиатурный ввод в буфер `v.kb` (см. функцию `wnd_keydown` модуля [wnd_main](js/wnd_main.js#L169). Для получения данных клавиатурного сканера нет необходимости переводить фокус ввода в поле `Штрихкод` - текст штрихкода заполняется автоматически.
+```bash
+$ npm install                   # Install project dependencies
+$ npm start                     # Compile and launch
+```
+If everything works, you should see the following:
 
-Для работы со сканером, эмулирующим COM-порт, следует установить программу-транслятор из com в клавиатуру. Например, [Datasnip](http://www.priority1design.com.au/datasnip.html)
+<img src="http://i.imgur.com/zR7VRG6.png?2" />
 
-Сканеры, подключенные к мобильным устройствам через micro-usb или bluetooth, обычно отображаются как клавиатурное устройство ввода и не требуют дополнительной настройки.
- 
-Для распознавания штрихкода, возможно использование камеры мобильного устройства. Для этого необходимо в настройках программы сканирования настроить url перехода, как http://paperless.local/?s=%%%, где %%% - штрихкод, который распознала программа
+While developing, you will probably rely mostly on `npm start`; however, there are additional scripts at your disposal:
 
-### Регистрация событий в 1С
-Пример регистрации в таблице 1С некого события, приведён в процедурах `Регистрация()` и `РегистрацияДаты()` обработки `БезбумажкаФурнитура.epf`.
-Переход к этим процедурам происходит в случае, если в структуре параметров запроса, передаваемого страницей безбумажки в 1С, параметр `Режим.Вариант` принимает значения `Регистрация` или `calendar_delivery`.
+|`npm run <script>`|Description|
+|------------------|-----------|
+|`start`|Serves your app at `localhost:3000`. HMR will be enabled in development.|
+|`compile`|Compiles the application to disk (`~/dist` by default).|
+|`dev`|Same as `npm start`, but enables nodemon for the server as well.|
+|`dev:no-debug`|Same as `npm run dev` but disables devtool instrumentation.|
+|`test`|Runs unit tests with Karma and generates a coverage report.|
+|`test:dev`|Runs Karma and watches for changes to re-run tests; does not generate coverage reports.|
+|`deploy`|Runs linter, tests, and then, on success, compiles your application to disk.|
+|`deploy:dev`|Same as `deploy` but overrides `NODE_ENV` to "development".|
+|`deploy:prod`|Same as `deploy` but overrides `NODE_ENV` to "production".|
+|`lint`|Lint all `.js` files.|
+|`lint:fix`|Lint and fix all `.js` files. [Read more on this](http://eslint.org/docs/user-guide/command-line-interface.html#fix).|
 
-Для привязки регистрируемого события к конкретному подразделению, рабочему месту и исполнителю, служит форма `registration_prm`, описанная в модуле [wnd_registration_prm](js/wnd_registration_prm.js)
+## Application Structure
 
-### Структура url и параметры запроса к 1С
-При открытии страницы безбумажки, так же, как при событиях выбора значений в полях ввода или событиях сканера, в 1С передаётся единообразная струетура параметров. Дублируем здесь описание состава и типов полей структуры, приведенного в модуле http-сервиса PaperLess УПзП:
-- Штрихкод - Строка - параметр url: "s" - по умолчанию пустая строка
-- ИдКлиента - Строка - параметр url: "browser_uid"	- GUID, к которому можно привязать сохраненные настройки
-- Режим - Структура - параметр url: "m" - Например, идентификатор отчета или указание, что регистрировать. Если в запросе на этом месте json-строка, она десериализуется в структуру. Таким образом, в параметер m можно передать довольно сложные и длинные данные
-- Формат - Строка - параметр url: "f", формат, в котором возвращать данные. Доступные значения {json, xml, html, pdf, blob, base64}
+The application structure presented in this boilerplate is **fractal**, where functionality is grouped primarily by feature rather than file type. Please note, however, that this structure is only meant to serve as a guide, it is by no means prescriptive. That said, it aims to represent generally accepted guidelines and patterns for building scalable applications. If you wish to read more about this pattern, please check out this [awesome writeup](https://github.com/davezuko/react-redux-starter-kit/wiki/Fractal-Project-Structure) by [Justin Greenberg](https://github.com/justingreenberg).
 
-## Иллюстрации
-### Режим *Обзор задания*
-![Обзор задания](https://raw.githubusercontent.com/oknosoft/paperless/master/data/paperless_view_task.png)
-Используется начальником производства, содержит информацию о составе изделий, включенных в задание с эскизами, фрагментами спецификаций и комментариями менеджеров и замерщиков. Начальник производства анализирует наличие нестандартных позиций и принципиальную выполнимость задания, ставит визу *В производство* или *Отклонить - доработать*
+```
+.
+├── bin                      # Build/Start scripts
+├── blueprints               # Blueprint files for redux-cli
+├── build                    # All build-related configuration
+│   └── webpack              # Environment-specific configuration files for webpack
+├── config                   # Project configuration settings
+├── server                   # Koa application (uses webpack middleware)
+│   └── main.js              # Server application entry point
+├── src                      # Application source code
+│   ├── index.html           # Main HTML page container for app
+│   ├── main.js              # Application bootstrap and rendering
+│   ├── components           # Reusable Presentational Components
+│   ├── containers           # Reusable Container Components
+│   ├── layouts              # Components that dictate major page structure
+│   ├── redux                # "Ducks" location...
+│   │   └── modules          # reducer, action, creators not part of a route
+│   ├── routes               # Main route definitions and async split points
+│   │   ├── index.js         # Bootstrap main application routes with store
+│   │   └── Home             # Fractal route
+│   │       ├── index.js     # Route definitions and async split points
+│   │       ├── assets       # Assets required to render components
+│   │       ├── components   # Presentational React Components
+│   │       ├── container    # Connect components to actions and store
+│   │       ├── modules      # Collections of reducers/constants/actions
+│   │       └── routes **    # Fractal sub-routes (** optional)
+│   ├── static               # Static assets (not imported anywhere in source code)
+│   ├── store                # Redux-specific pieces
+│   │   ├── createStore.js   # Create and instrument redux store
+│   │   └── reducers.js      # Reducer registry and injection
+│   └── styles               # Application-wide styles (generally settings)
+└── tests                    # Unit tests
+```
 
-### Режим *Фурнитура*
-![Фурнитура](https://raw.githubusercontent.com/oknosoft/paperless/master/data/paperless_furn.png)
-Используется на одноименном участке. Пример интересен множеством задействованных инструментов, среди которых
-- Пользовательские поля `Дата` и `Примечание`, содержимое которых отправляется вместе со стандартными полями в 1С при регистрации
-- Пример вызова методов регистрации событий в 1С
-- Форма `Параметры регистрации`, в которой уточняется `Подразделение` и `Исполнитель`
-- Условное оформление спецификации. Можно задать жирность и цвет шрифта и фона как отдельных полей, так и строк таблицы
-- Гиперссылки в спецификации и назначение обработчиков нажатия гиперссылок на стороне клиента и стороне 1С
-- Возможность переопределить произвольные параметры URL, задать быстрые управляющие клавиши или спциальные управляющие штрихкоды в модуле [scancmd](js/scancmd.js)
-- Пример взаимодействия с оборудованием на низком уровне. Функция `do_furn_cut()` модуля [scancmd](js/scancmd.js#L178) отправляет строку с адресом, номером порта и координатами в релейную службу, реализованную на Node.js (файл [relay_http](js/relay_http.js)), которая перенаправляет сырые данные по winsocket в управляющий компьютер фурнитурной станции
+## Development
+
+#### Developer Tools
+
+**We recommend using the [Redux DevTools Chrome Extension](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd).**
+Using the chrome extension allows your monitors to run on a separate thread and affords better performance and functionality. It comes with several of the most popular monitors, is easy to configure, filters actions, and doesn’t require installing any packages.
+
+However, adding the DevTools components to your project is simple. First, grab the packages from npm:
+
+```bash
+npm i --save-dev redux-devtools redux-devtools-log-monitor redux-devtools-dock-monitor
+```
+
+Then follow the [manual integration walkthrough](https://github.com/gaearon/redux-devtools/blob/master/docs/Walkthrough.md).
+
+#### `redux-cli`
+
+```bash
+npm install redux-cli --save-dev
+```
+
+### Routing
+We use `react-router` [route definitions](https://github.com/reactjs/react-router/blob/master/docs/API.md#plainroute) (`<route>/index.js`) to define units of logic within our application. See the [application structure](#application-structure) section for more information.
+
+## Testing
+To add a unit test, simply create a `.spec.js` file anywhere in `~/tests`. Karma will pick up on these files automatically, and Mocha and Chai will be available within your test without the need to import them. If you are using `redux-cli`, test files should automatically be generated when you create a component or redux module.
+
+Coverage reports will be compiled to `~/coverage` by default. If you wish to change what reporters are used and where reports are compiled, you can do so by modifying `coverage_reporters` in `~/config/index.js`.
+
+## Deployment
+Out of the box, this starter kit is deployable by serving the `~/dist` folder generated by `npm run deploy` (make sure to specify your target `NODE_ENV` as well). This project does not concern itself with the details of server-side rendering or API structure, since that demands an opinionated structure that makes it difficult to extend the starter kit. However, if you do need help with more advanced deployment strategies, here are a few tips:
+
+### Static Deployments
+If you are serving the application via a web server such as nginx, make sure to direct incoming routes to the root `~/dist/index.html` file and let react-router take care of the rest. If you are unsure of how to do this, you might find [this documentation](https://github.com/reactjs/react-router/blob/master/docs/guides/Histories.md#configuring-your-server) helpful. The Koa server that comes with the starter kit is able to be extended to serve as an API or whatever else you need, but that's entirely up to you.
+
+### Heroku
+
+Heroku has `nodejs buildpack` script that does the following when you deploy your app to Heroku.
+1. Find `packages.json` in the root directory.
+2. Install `nodejs` and `npm` packages.
+3. Run `npm postinstall script`
+4. Run `npm start`
+
+Therefore, you need to modify `package.json` before deploying to Heroku. Make the following changes in the `scripts` section of `package.json`.
+
+```
+...
+"start": "better-npm-run start:prod",
+"serve": "better-npm-run start",
+"postinstall": "npm run deploy:prod",
+"betterScripts": {
+  ...
+  "start:prod": {
+    "command": "babel-node bin/server",
+    "env": {
+      "NODE_ENV": "production"
+    }
+  }
+  ...
+},
+```
+
+It's also important to tell Heroku to install all `devDependencies` to successfully compile your app on Heroku's environment. Run the following in your terminal.
+
+```bash
+$ heroku config:set NPM_CONFIG_PRODUCTION=false
+```
+
+With this setup, you will install all the necessray packages, build your app, and start the webserver (e.g. koa) everytime you push your app to Heroku. Try to deploy to Heroku by running the following commands.
+
+```bash
+$ git add .
+$ git commit -m 'My awesome commit'
+$ git push heroku master
+```
+
+If you fail to deploy for an unknown reason, try [this helpful comment](https://github.com/davezuko/react-redux-starter-kit/issues/730#issuecomment-213997120) by [DonHansDampf](https://github.com/DonHansDampf) addressing Heroku deployments.
+
+Have more questions? Feel free to submit an issue or join the Gitter chat!
+
+## Build System
+
+### Configuration
+
+Default project configuration can be found in `~/config/index.js`. Here you'll be able to redefine your `src` and `dist` directories, adjust compilation settings, tweak your vendor dependencies, and more. For the most part, you should be able to make changes in here **without ever having to touch the actual webpack build configuration**.
+
+If you need environment-specific overrides (useful for dynamically setting API endpoints, for example), you can edit `~/config/environments.js` and define overrides on a per-NODE_ENV basis. There are examples for both `development` and `production`, so use those as guidelines. Here are some common configuration options:
+
+|Key|Description|
+|---|-----------|
+|`dir_src`|application source code base path|
+|`dir_dist`|path to build compiled application to|
+|`server_host`|hostname for the Koa server|
+|`server_port`|port for the Koa server|
+|`compiler_css_modules`|whether or not to enable CSS modules|
+|`compiler_devtool`|what type of source-maps to generate (set to `false`/`null` to disable)|
+|`compiler_vendor`|packages to separate into to the vendor bundle|
+
+
+### Root Resolve
+Webpack is configured to make use of [resolve.root](http://webpack.github.io/docs/configuration.html#resolve-root), which lets you import local packages as if you were traversing from the root of your `~/src` directory. Here's an example:
+
+```js
+// current file: ~/src/views/some/nested/View.js
+// What used to be this:
+import SomeComponent from '../../../components/SomeComponent'
+
+// Can now be this:
+import SomeComponent from 'components/SomeComponent' // Hooray!
+```
+
+### Globals
+
+These are global variables available to you anywhere in your source code. If you wish to modify them, they can be found as the `globals` key in `~/config/index.js`. When adding new globals, make sure you also add them to `~/.eslintrc`.
+
+|Variable|Description|
+|---|---|
+|`process.env.NODE_ENV`|the active `NODE_ENV` when the build started|
+|`__DEV__`|True when `process.env.NODE_ENV` is `development`|
+|`__PROD__`|True when `process.env.NODE_ENV` is `production`|
+|`__TEST__`|True when `process.env.NODE_ENV` is `test`|
+|`__DEBUG__`|True when `process.env.NODE_ENV` is `development` and cli arg `--no_debug` is not set (`npm run dev:no-debug`)|
+|`__BASENAME__`|[history basename option](https://github.com/rackt/history/blob/master/docs/BasenameSupport.md)|
+
+### Styles
+
+Both `.scss` and `.css` file extensions are supported out of the box and are configured to use [CSS Modules](https://github.com/css-modules/css-modules). After being imported, styles will be processed with [PostCSS](https://github.com/postcss/postcss) for minification and autoprefixing, and will be extracted to a `.css` file during production builds.
+
+### Server
+
+This starter kit comes packaged with an Koa server. It's important to note that the sole purpose of this server is to provide `webpack-dev-middleware` and `webpack-hot-middleware` for hot module replacement. Using a custom Koa app in place of [webpack-dev-server](https://github.com/webpack/webpack-dev-server) makes it easier to extend the starter kit to include functionality such as API's, universal rendering, and more -- all without bloating the base boilerplate.
+
+### Production Optimization
+
+Babel is configured to use [babel-plugin-transform-runtime](https://www.npmjs.com/package/babel-plugin-transform-runtime) so transforms aren't inlined. In production, webpack will extract styles to a `.css` file, minify your JavaScript, and perform additional optimizations such as module deduplication.
+
+## Learning Resources
+
+* [Starting out with react-redux-starter-kit](https://suspicious.website/2016/04/29/starting-out-with-react-redux-starter-kit/) is an introduction to the components used in this starter kit with a small example in the end.
+
+## FAQ
+
+Having trouble? Check out our [FAQ](https://github.com/davezuko/react-redux-starter-kit/wiki/FAQ:-Frequently-Asked-Questions) or submit an issue. Please be considerate by only posting issues that are directly related to this project; questions about how to implement certain React or Redux features are both best suited for StackOverflow or their respective repositories.
+
+## Thank You
+
+This project wouldn't be possible without help from the community, so I'd like to highlight some of its biggest contributors. Thank you all for your hard work, you've made my life a lot easier and taught me a lot in the process.
+
+* [Justin Greenberg](https://github.com/justingreenberg) - For all of your PR's, getting us to Babel 6, and constant work improving our patterns.
+* [Roman Pearah](https://github.com/neverfox) - For your bug reports, help in triaging issues, and PR contributions.
+* [Spencer Dixin](https://github.com/SpencerCDixon) - For your creation of [redux-cli](https://github.com/SpencerCDixon/redux-cli).
+* [Jonas Matser](https://github.com/mtsr) - For your help in triaging issues and unending support in our Gitter channel.
+
+And to everyone else who has contributed, even if you are not listed here your work is appreciated.
