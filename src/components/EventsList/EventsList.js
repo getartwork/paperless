@@ -8,17 +8,17 @@ import cn from "classnames";
 const limit = 30,
   totalRows = 999999;
 
-
 const list = {
   _data: [],
   get size(){ return this._data.length},
   get(index){ return this._data[index]},
   clear(){this._data.length = 0}
 }
+
 let timer = 0;
 
 const columns = ['date','number_doc']
-const columnWidths = [140,200]
+const columnWidths = [150,220]
 
 export default class EventsList extends Component {
 
