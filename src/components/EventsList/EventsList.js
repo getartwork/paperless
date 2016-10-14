@@ -18,17 +18,17 @@ const list = {
 let timer = 0;
 
 const columns = ['date','number_doc']
-const columnWidths = [150,220]
 
 export default class EventsList extends Component {
 
   static contextTypes = {
-    $p: React.PropTypes.object.isRequired,
-    screen: React.PropTypes.object.isRequired
+    $p: React.PropTypes.object.isRequired
   }
 
   static propTypes = {
-    fetch_remote: PropTypes.bool
+    fetch_remote: PropTypes.bool,
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
   }
 
   // rowIndex, columnIndex
@@ -56,12 +56,12 @@ export default class EventsList extends Component {
   render () {
 
     const { totalRowCount } = this.state
-    const { screen } = this.context
+    const { width, height, fetch_remote, columnWidths } = this.props
 
     // если изменился статус синхронизации
-    if(this.state.fetch_remote != this.props.fetch_remote){
+    if(this.state.fetch_remote != fetch_remote){
 
-      this.state.fetch_remote = this.props.fetch_remote;
+      this.state.fetch_remote = fetch_remote;
 
       if(timer){
         clearTimeout(timer)
@@ -101,8 +101,6 @@ export default class EventsList extends Component {
               })
             }
 
-            let left = 0;
-
             return (
 
               <Grid
@@ -112,11 +110,11 @@ export default class EventsList extends Component {
                 onSectionRendered={onSectionRendered}
                 cellRenderer={this._cellRenderer}
                 columnCount={columns.length}
-                columnWidth={({index}) => columnWidths[index] }
+                columnWidth={({index}) => Math.floor(width*columnWidths[index]/100)}
                 rowCount={totalRowCount}
                 rowHeight={30}
-                width={screen.width}
-                height={screen.height-140}
+                width={width}
+                height={height}
               />
 
             )
