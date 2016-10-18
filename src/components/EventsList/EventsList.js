@@ -17,8 +17,6 @@ const list = {
 
 let timer = 0;
 
-const columns = ['date','number_doc']
-
 export default class EventsList extends Component {
 
   static contextTypes = {
@@ -42,21 +40,20 @@ export default class EventsList extends Component {
       totalRowCount: totalRows,
       filter: {id: 0, name: ''},
       selectedRowIndex: 0,
-      fetch_remote: props.fetch_remote
+      fetch_remote: props.fetch_remote,
+      popover_opened: false
     }
 
     this._isRowLoaded = ::this._isRowLoaded
     this._loadMoreRows = ::this._loadMoreRows
     this._cellRenderer = ::this._cellRenderer
 
-    this.handleEdit = ::this.handleEdit
-
   }
 
   render () {
 
     const { totalRowCount } = this.state
-    const { width, height, fetch_remote, columnWidths } = this.props
+    const { width, height, fetch_remote, columns, columnWidths } = this.props
 
     // если изменился статус синхронизации
     if(this.state.fetch_remote != fetch_remote){
@@ -75,7 +72,7 @@ export default class EventsList extends Component {
         timer = setTimeout(() =>{
           list.clear()
           this.setState(new_state)
-        }, 100)
+        }, 200)
 
       }
     }
@@ -132,10 +129,10 @@ export default class EventsList extends Component {
 
   }
 
-  handleEdit(e){
+  handleMarkDeleted(e){
     const row = list.get(this.state.selectedRowIndex)
     if(row)
-      this.props.handleEdit(row)
+      this.props.handleMarkDeleted(row)
   }
 
   handleRemove(e){
@@ -155,12 +152,13 @@ export default class EventsList extends Component {
   }
 
   _formatter (row, index){
-    const v = row[columns[index]]
+
+    const v = row[this.props.columns[index]]
     const { $p } = this.context
 
     switch(index){
       case 0:
-        return $p.utils.moment(v).format($p.utils.moment._masks.date_time);
+        return $p.utils.moment(v).format('DD.MM.YY HH:mm:ss');
       default:
         return v;
     }
@@ -230,7 +228,6 @@ export default class EventsList extends Component {
    */
   _cellRenderer ({columnIndex, isScrolling, key, rowIndex, style}) {
 
-    const { $p } = this.context
     const setState = ::this.setState
     // var grid = this.refs.AutoSizer.refs.Grid
 
@@ -279,7 +276,7 @@ export default class EventsList extends Component {
             selectedRowIndex: rowIndex
           })
         }}
-        onDoubleClick={this.handleEdit}
+        onDoubleClick={::this.handleMarkDeleted}
       >
         {content}
       </div>
