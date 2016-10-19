@@ -1,0 +1,12 @@
+.DS_STORE
+*.log
+
+node_modules
+
+old
+dist
+coverage
+
+.idea/
+
+server/superlogin/config.js

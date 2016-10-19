@@ -4,16 +4,8 @@ import {InfiniteLoader, Grid} from "react-virtualized";
 import styles from "./EventsList.scss";
 import cn from "classnames";
 
-
 const limit = 30,
   totalRows = 999999;
-
-const list = {
-  _data: [],
-  get size(){ return this._data.length},
-  get(index){ return this._data[index]},
-  clear(){this._data.length = 0}
-}
 
 let timer = 0;
 
@@ -44,6 +36,13 @@ export default class EventsList extends Component {
       popover_opened: false
     }
 
+    this._list = {
+      _data: [],
+      get size(){ return this._data.length},
+      get(index){ return this._data[index]},
+      clear(){this._data.length = 0}
+    }
+
     this._isRowLoaded = ::this._isRowLoaded
     this._loadMoreRows = ::this._loadMoreRows
     this._cellRenderer = ::this._cellRenderer
@@ -70,7 +69,7 @@ export default class EventsList extends Component {
           totalRowCount: totalRowCount <= 1 ? 2 : 1
         }
         timer = setTimeout(() =>{
-          list.clear()
+          this._list.clear()
           this.setState(new_state)
         }, 200)
 
@@ -130,7 +129,7 @@ export default class EventsList extends Component {
   }
 
   handleMarkDeleted(e){
-    const row = list.get(this.state.selectedRowIndex)
+    const row = this._list.get(this.state.selectedRowIndex)
     if(row)
       this.props.handleMarkDeleted(row)
   }
@@ -165,7 +164,7 @@ export default class EventsList extends Component {
   }
 
   _isRowLoaded ({ index }) {
-    const res = !!list.get(index)
+    const res = !!this._list.get(index)
     return res
   }
 
@@ -199,8 +198,8 @@ export default class EventsList extends Component {
 
         // обновляем массив результата
         for (var i = 0; i < data.length; i++) {
-          if(!list._data[i+startIndex]){
-            list._data[i+startIndex] = data[i];
+          if(!this._list._data[i+startIndex]){
+            this._list._data[i+startIndex] = data[i];
           }
         }
 
@@ -241,7 +240,7 @@ export default class EventsList extends Component {
       }
     )
 
-    const row = list.get(rowIndex)
+    const row = this._list.get(rowIndex)
 
     let content
 
