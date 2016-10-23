@@ -24,8 +24,8 @@ export default function settings(prm) {
     rest_path: "",
 
     // расположение couchdb
-    //couch_path: "http://cou206:5984/wb_",
-    couch_path: "https://barcode.oknosoft.ru/couchdb/wb_",
+    couch_path: "http://localhost:5984/wb_",
+    //couch_path: "https://barcode.oknosoft.ru/couchdb/wb_",
 
     pouch_filter: {
       doc: "auth/planning_event",
